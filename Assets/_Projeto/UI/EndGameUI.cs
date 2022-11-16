@@ -16,20 +16,19 @@ namespace com.Icypeak.Orbit
         private void OnEnable()
         {
             var score = ScoreManager.Instance.ScorePoints;
-            var currency = Resources.Load<CurrencyData>("Data/CurrencyData");
-            var gameData = Resources.Load<GameData>("Data/GameData");
 
             var scoreCoins = score / 10.0f;
-            var bonusCoins = (scoreCoins * gameData.ScoreMultiplier) - scoreCoins;
+            var bonusCoins = (scoreCoins * LocalDataManager.Instance.GameDataResource.ScoreMultiplier) - scoreCoins;
 
-            gameData.ScoreMultiplier = 1.0f;
-            currency.Coins += (int)(scoreCoins + bonusCoins);
+            LocalDataManager.Instance.UpdateLocalCurrencyData(new CurrencyData(
+                LocalDataManager.Instance.CurrencyDataResource.Coins += (int)(scoreCoins + bonusCoins),
+                LocalDataManager.Instance.CurrencyDataResource.Cash
+            ));
 
             scorePointsText.text = score.ToString();
             scoreCoinsText.text = $"Score Coins: + {(int)scoreCoins}";
-            bonusCoinsText.text = $"Bonus({gameData.ScoreMultiplier}x): {(int)bonusCoins}";
+            bonusCoinsText.text = $"Bonus({LocalDataManager.Instance.GameDataResource.ScoreMultiplier}x): {(int)bonusCoins}";
             totalCoinsText.text = $"Total Earned: {(int)(scoreCoins + bonusCoins)}";
-            currentCoinsText.text = $"Coins: {currency.Coins}";
         }
     }
 }

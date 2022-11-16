@@ -7,5 +7,11 @@ namespace com.icypeak.data
     {
         public int Coins;
         public int Cash;
+
+        public CurrencyData(int coins, int cash)
+        {
+            this.Coins = coins;
+            this.Cash = cash;
+        }
     }
 }

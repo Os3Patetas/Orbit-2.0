@@ -30,8 +30,6 @@ namespace com.Icypeak.Orbit
             bonusCoinsText.text = $"Bonus({gameData.ScoreMultiplier}x): {(int)bonusCoins}";
             totalCoinsText.text = $"Total Earned: {(int)(scoreCoins + bonusCoins)}";
             currentCoinsText.text = $"Coins: {currency.Coins}";
-
-            DatabaseManager.Instance.UpdateDB();
         }
     }
 }

@@ -1,12 +1,23 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using TMPro;
 
 using com.Icypeak.Orbit.Manager;
+using com.icypeak.data;
 
 namespace com.Icypeak.Orbit.Scene
 {
     public class MainMenu : MonoBehaviour
     {
+        [SerializeField] TextMeshProUGUI CoinsTextEl;
+        [SerializeField] TextMeshProUGUI CashTextEl;
+
+        void Start()
+        {
+            CoinsTextEl.text = LocalDataManager.Instance.CurrencyDataResource.Coins.ToString();
+            CashTextEl.text = LocalDataManager.Instance.CurrencyDataResource.Cash.ToString();
+        }
+
         public void GoToChooseGameMode()
         {
             SceneManager.LoadScene("ChooseGameMode");

@@ -12,5 +12,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f9f836e3f3b535024b29cc380dc56180, type: 3}
   m_Name: CurrencyData
   m_EditorClassIdentifier: Assembly-CSharp:com.icypeak.data:CurrencyData
-  Coins: 0
+  Coins: 6
   Cash: 0

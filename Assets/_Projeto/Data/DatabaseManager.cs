@@ -1,21 +1,14 @@
 using Firebase.Database;
 using UnityEngine;
-using TMPro;
 using System.Collections;
-using System;
 
 namespace com.icypeak.data
 {
     public class DatabaseManager : MonoBehaviour
     {
         public static DatabaseManager Instance;
-        [SerializeField] TextMeshProUGUI CoinsTxt;
-        [SerializeField] TextMeshProUGUI CashTxt;
-
         string userId;
         DatabaseReference dbRef;
-        CurrencyData currencyDataResource;
-        GameData gameDataResource;
 
         private void Awake()
         {
@@ -28,9 +21,6 @@ namespace com.icypeak.data
                 Instance = this;
             }
             DontDestroyOnLoad(this.gameObject);
-
-            currencyDataResource = Resources.Load<CurrencyData>("Data/CurrencyData");
-            gameDataResource = Resources.Load<GameData>("Data/GameData");
         }
 
         void Start()
@@ -38,110 +28,78 @@ namespace com.icypeak.data
             userId = "caioPTLULA";
             dbRef = FirebaseDatabase.DefaultInstance.RootReference;
 
-            StartCoroutine(StartCurrency());
-            StartCoroutine(StartGameData());
+            StartCoroutine(StartDB());
         }
 
-        IEnumerator StartCurrency()
+        IEnumerator StartDB()
         {
             var currency = dbRef.Child("currency").Child(userId).GetValueAsync();
-            yield return new WaitUntil(predicate: () => currency.IsCompleted);
-            if (currency != null)
+            var gameData = dbRef.Child(LocalDataManager.Instance.GameDataResource.GameName).Child(userId).GetValueAsync();
+            yield return new WaitUntil(predicate: () => currency.IsCompleted && gameData.IsCompleted);
+            if (currency != null && gameData != null)
             {
-                DataSnapshot snapshot = currency.Result;
-                print("Currency Exists: " + snapshot.Exists);
-                if (snapshot.Exists)
+                DataSnapshot snapshotCurrency = currency.Result;
+                DataSnapshot snapshotGameData = gameData.Result;
+                print("Currency Exists: " + snapshotCurrency.Exists);
+                print("GameInfo Exists: " + snapshotGameData.Exists);
+
+                if (snapshotCurrency.Exists)
                 {
-                    var coins = snapshot.Child("coins").Value.ToString();
-                    var cash = snapshot.Child("cash").Value.ToString();
-                    print(coins);
-                    print(cash);
-
-                    CoinsTxt.text = coins;
-                    CashTxt.text = cash;
-
-                    currencyDataResource.Coins = int.Parse(coins);
-                    currencyDataResource.Cash = int.Parse(cash);
+                    LocalDataManager.Instance.CurrencyDataResource.Coins = int.Parse(snapshotCurrency.Child("coins").Value.ToString());
+                    LocalDataManager.Instance.CurrencyDataResource.Cash = int.Parse(snapshotCurrency.Child("cash").Value.ToString());
                 }
                 else
                 {
-                    var info = new CurrencyJSONFY(currencyDataResource);
+                    var info = new CurrencyJSONFY(LocalDataManager.Instance.CurrencyDataResource);
                     var infoToJson = JsonUtility.ToJson(info);
                     dbRef.Child("currency").Child(userId).SetRawJsonValueAsync(infoToJson);
                 }
-            }
-        }
 
-        IEnumerator StartGameData()
-        {
-            var gameInfo = dbRef.Child(this.gameDataResource.GameName).Child(userId).GetValueAsync();
-            yield return new WaitUntil(predicate: () => gameInfo.IsCompleted);
-            if (gameInfo != null)
-            {
-                DataSnapshot snapshot = gameInfo.Result;
-                print("GameInfo Exists: " + snapshot.Exists);
-                if (snapshot.Exists)
+                if (snapshotGameData.Exists)
                 {
-                    var daily = snapshot.Child("daily_score").Value.ToString();
-                    var weekly = snapshot.Child("weekly_score").Value.ToString();
-                    var monthly = snapshot.Child("monthly_score").Value.ToString();
-                    var alltime = snapshot.Child("alltime_score").Value.ToString();
-
-                    gameDataResource.DailyScore = int.Parse(daily);
-                    gameDataResource.WeeklyScore = int.Parse(weekly);
-                    gameDataResource.MonthlyScore = int.Parse(monthly);
-                    gameDataResource.AllTimeScore = int.Parse(alltime);
+                    LocalDataManager.Instance.GameDataResource.DailyScore = int.Parse(snapshotGameData.Child("daily_score").Value.ToString());
+                    LocalDataManager.Instance.GameDataResource.WeeklyScore = int.Parse(snapshotGameData.Child("weekly_score").Value.ToString());
+                    LocalDataManager.Instance.GameDataResource.MonthlyScore = int.Parse(snapshotGameData.Child("monthly_score").Value.ToString());
+                    LocalDataManager.Instance.GameDataResource.AllTimeScore = int.Parse(snapshotGameData.Child("alltime_score").Value.ToString());
                 }
                 else
                 {
-                    var info = new GameDataJSONFY(gameDataResource);
+                    var info = new GameDataJSONFY(LocalDataManager.Instance.GameDataResource);
                     var infoToJson = JsonUtility.ToJson(info);
-                    dbRef.Child(gameDataResource.GameName).Child(userId).SetRawJsonValueAsync(infoToJson);
+                    dbRef.Child(LocalDataManager.Instance.GameDataResource.GameName).Child(userId).SetRawJsonValueAsync(infoToJson);
                 }
             }
         }
 
-        public void UpdateDB()
+        public void UpdateCurrencyDB()
         {
-            var infoGame = new GameDataJSONFY(gameDataResource);
-            var infoGameToJson = JsonUtility.ToJson(infoGame);
-            dbRef.Child(gameDataResource.GameName).Child(userId).SetRawJsonValueAsync(infoGameToJson);
-
-            var infoCurrency = new CurrencyJSONFY(currencyDataResource);
+            var infoCurrency = new CurrencyJSONFY(LocalDataManager.Instance.CurrencyDataResource);
             var infoCurrencyToJson = JsonUtility.ToJson(infoCurrency);
             dbRef.Child("currency").Child(userId).SetRawJsonValueAsync(infoCurrencyToJson);
         }
 
-        public IEnumerator ReadDB(Action<CurrencyData, GameData> onComplete = null)
+        public void UpdateGameDataDB()
         {
-            var currency = dbRef.Child(gameDataResource.GameName).Child(userId).GetValueAsync();
-            yield return new WaitUntil(predicate: () => currency.IsCompleted);
-            var gameInfo = dbRef.Child(gameDataResource.GameName).Child(userId).GetValueAsync();
-            yield return new WaitUntil(predicate: () => gameInfo.IsCompleted);
-            if (currency != null && gameInfo != null)
+            var infoGame = new GameDataJSONFY(LocalDataManager.Instance.GameDataResource);
+            var infoGameToJson = JsonUtility.ToJson(infoGame);
+            dbRef.Child(LocalDataManager.Instance.GameDataResource.GameName).Child(userId).SetRawJsonValueAsync(infoGameToJson);
+
+        }
+
+        void OnEnable()
+        {
+            LocalDataManager.Instance.OnCurrencyChange += UpdateCurrencyDB;
+            LocalDataManager.Instance.OnGameDataChange += UpdateGameDataDB;
+        }
+
+        void OnDisable()
+        {
+            if (LocalDataManager.Instance != null)
             {
-                DataSnapshot snapshotCurrency = currency.Result;
-                DataSnapshot snapshotGameInfo = currency.Result;
-
-                if (snapshotCurrency.Exists && snapshotGameInfo.Exists)
-                {
-                    var coins = snapshotCurrency.Child("coins").Value.ToString();
-                    var cash = snapshotCurrency.Child("cash").Value.ToString();
-                    var daily = snapshotGameInfo.Child("daily_score").Value.ToString();
-                    var weekly = snapshotGameInfo.Child("weekly_score").Value.ToString();
-                    var monthly = snapshotGameInfo.Child("monthly_score").Value.ToString();
-                    var alltime = snapshotGameInfo.Child("alltime_score").Value.ToString();
-
-                    currencyDataResource.Coins = int.Parse(coins);
-                    currencyDataResource.Cash = int.Parse(cash);
-                    gameDataResource.DailyScore = int.Parse(daily);
-                    gameDataResource.WeeklyScore = int.Parse(weekly);
-                    gameDataResource.MonthlyScore = int.Parse(monthly);
-                    gameDataResource.AllTimeScore = int.Parse(alltime);
-
-                    onComplete?.Invoke(currencyDataResource, gameDataResource);
-                }
+                LocalDataManager.Instance.OnCurrencyChange -= UpdateCurrencyDB;
+                LocalDataManager.Instance.OnGameDataChange -= UpdateGameDataDB;
             }
         }
+
     }
 }

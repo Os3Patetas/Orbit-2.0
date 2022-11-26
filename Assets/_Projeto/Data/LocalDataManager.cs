@@ -1,5 +1,6 @@
 using System;
 using UnityEngine;
+using com.icypeak.data.middlemen;
 
 namespace com.icypeak.data
 {
@@ -32,7 +33,7 @@ namespace com.icypeak.data
             GameDataResource = Resources.Load<GameData>("Data/GameData");
         }
 
-        public void UpdateLocalGameData(GameData newData)
+        public void UpdateLocalGameData(GameDataMiddleman newData)
         {
             GameDataResource.DailyScore = newData.DailyScore;
             GameDataResource.WeeklyScore = newData.WeeklyScore;
@@ -41,7 +42,7 @@ namespace com.icypeak.data
             OnGameDataChange?.Invoke();
         }
 
-        public void UpdateLocalCurrencyData(CurrencyData newData)
+        public void UpdateLocalCurrencyData(CurrencyMiddleman newData)
         {
             CurrencyDataResource.Coins = newData.Coins;
             CurrencyDataResource.Cash = newData.Cash;

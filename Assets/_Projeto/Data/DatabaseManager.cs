@@ -1,6 +1,7 @@
 using Firebase.Database;
 using UnityEngine;
 using System.Collections;
+using com.icypeak.data.middlemen;
 
 namespace com.icypeak.data
 {
@@ -45,7 +46,7 @@ namespace com.icypeak.data
 
                 if (snapshotCurrency.Exists)
                 {
-                    LocalDataManager.Instance.UpdateLocalCurrencyData(new CurrencyData(
+                    LocalDataManager.Instance.UpdateLocalCurrencyData(new CurrencyMiddleman(
                         int.Parse(snapshotCurrency.Child("coins").Value.ToString()),
                         int.Parse(snapshotCurrency.Child("cash").Value.ToString())
                     ));
@@ -59,7 +60,7 @@ namespace com.icypeak.data
 
                 if (snapshotGameData.Exists)
                 {
-                    LocalDataManager.Instance.UpdateLocalGameData(new GameData(
+                    LocalDataManager.Instance.UpdateLocalGameData(new GameDataMiddleman(
                         int.Parse(snapshotGameData.Child("daily_score").Value.ToString()),
                         int.Parse(snapshotGameData.Child("weekly_score").Value.ToString()),
                         int.Parse(snapshotGameData.Child("monthly_score").Value.ToString()),

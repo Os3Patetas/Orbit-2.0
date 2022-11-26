@@ -2,6 +2,7 @@ using UnityEngine;
 using TMPro;
 using com.Icypeak.Orbit.Manager;
 using com.icypeak.data;
+using com.icypeak.data.middlemen;
 
 namespace com.Icypeak.Orbit
 {
@@ -20,7 +21,7 @@ namespace com.Icypeak.Orbit
             var scoreCoins = score / 10.0f;
             var bonusCoins = (scoreCoins * LocalDataManager.Instance.GameDataResource.ScoreMultiplier) - scoreCoins;
 
-            LocalDataManager.Instance.UpdateLocalCurrencyData(new CurrencyData(
+            LocalDataManager.Instance.UpdateLocalCurrencyData(new CurrencyMiddleman(
                 LocalDataManager.Instance.CurrencyDataResource.Coins += (int)(scoreCoins + bonusCoins),
                 LocalDataManager.Instance.CurrencyDataResource.Cash
             ));

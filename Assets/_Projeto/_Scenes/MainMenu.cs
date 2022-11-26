@@ -12,6 +12,11 @@ namespace com.Icypeak.Orbit.Scene
         [SerializeField] TextMeshProUGUI CoinsTextEl;
         [SerializeField] TextMeshProUGUI CashTextEl;
 
+        void Start()
+        {
+            RefreshCurrencyUI();
+        }
+
         void RefreshCurrencyUI()
         {
             CoinsTextEl.text = LocalDataManager.Instance.CurrencyDataResource.Coins.ToString();

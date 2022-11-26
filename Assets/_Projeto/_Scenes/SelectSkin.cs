@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using TMPro;
-using com.icypeak.data;
+using com.Icypeak.Data;
 
 namespace com.Icypeak.Orbit.Scene
 {
@@ -12,8 +12,8 @@ namespace com.Icypeak.Orbit.Scene
 
         void Start()
         {
-            cashTextEl.text = LocalDataManager.Instance.CurrencyDataResource.Cash.ToString();
-            coinsTextEl.text = LocalDataManager.Instance.CurrencyDataResource.Coins.ToString();
+            cashTextEl.text = LocalDataManager.Instance.Currency.Cash.ToString();
+            coinsTextEl.text = LocalDataManager.Instance.Currency.Coins.ToString();
         }
 
         public void GoToMainMenu()

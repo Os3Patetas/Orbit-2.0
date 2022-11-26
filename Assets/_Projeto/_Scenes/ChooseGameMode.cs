@@ -7,14 +7,14 @@ namespace com.Icypeak.Orbit.Scene
     {
         public void GoToDestroyMode()
         {
-            SceneManager.LoadScene("DestroyMode");
+            SceneManager.LoadScene("CatchMode");
         }
 
         public void GoToSurviveMode()
         {
-            SceneManager.LoadScene("SurviveMode");
+            SceneManager.LoadScene("DodgeMode");
         }
-        
+
         public void GoToMainMenu()
         {
             SceneManager.LoadScene("MainMenu");

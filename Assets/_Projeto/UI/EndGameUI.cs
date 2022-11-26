@@ -1,8 +1,7 @@
 using UnityEngine;
 using TMPro;
 using com.Icypeak.Orbit.Manager;
-using com.icypeak.data;
-using com.icypeak.data.middlemen;
+using com.Icypeak.Data;
 
 namespace com.Icypeak.Orbit
 {
@@ -18,19 +17,18 @@ namespace com.Icypeak.Orbit
         {
             var score = ScoreManager.Instance.ScorePoints;
 
-            var scoreCoins = (int)(score / 10.0f);
-            var bonusCoins = (int)((scoreCoins * LocalDataManager.Instance.GameDataResource.ScoreMultiplier) - scoreCoins);
+            var scoreCoins = (int)(score);
+            //var bonusCoins = (int)((scoreCoins * LocalDataManager.Instance.Game.ScoreMultiplier) - scoreCoins);
+            var bonusCoins = 0;
             var totalReceivedCoins = scoreCoins + bonusCoins;
-            var currentCoins = LocalDataManager.Instance.CurrencyDataResource.Coins + totalReceivedCoins;
+            var currentCoins = LocalDataManager.Instance.Currency.Coins + totalReceivedCoins;
 
-            LocalDataManager.Instance.UpdateLocalCurrencyData(new CurrencyMiddleman(
-                currentCoins,
-                LocalDataManager.Instance.CurrencyDataResource.Cash
-            ));
+            LocalDataManager.Instance.UpdateLocalCoins(currentCoins);
 
             scorePointsText.text = score.ToString();
             scoreCoinsText.text = $"Score Coins: + {scoreCoins}";
-            bonusCoinsText.text = $"Bonus({LocalDataManager.Instance.GameDataResource.ScoreMultiplier}x): {bonusCoins}";
+            //bonusCoinsText.text = $"Bonus({LocalDataManager.Instance.Game.ScoreMultiplier}x): {bonusCoins}";
+            bonusCoinsText.text = $"Bonus({0}x): {bonusCoins}";
             totalCoinsText.text = $"Total Earned: {totalReceivedCoins}";
             currentCoinsText.text = $"Current Coins: {currentCoins}";
         }

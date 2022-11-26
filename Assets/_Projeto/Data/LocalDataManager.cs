@@ -1,15 +1,14 @@
 using System;
 using UnityEngine;
-using com.icypeak.data.middlemen;
 
-namespace com.icypeak.data
+namespace com.Icypeak.Data
 {
     public class LocalDataManager : MonoBehaviour
     {
         public static LocalDataManager Instance;
 
-        public GameData GameDataResource { get; private set; }
-        public CurrencyData CurrencyDataResource { get; private set; }
+        public GameData Game;
+        public CurrencyData Currency;
 
         public Action OnGameDataChange;
         public Action OnCurrencyChange;
@@ -27,26 +26,37 @@ namespace com.icypeak.data
             DontDestroyOnLoad(this.gameObject);
         }
 
-        void Start()
+        void OnEnable()
         {
-            CurrencyDataResource = Resources.Load<CurrencyData>("Data/CurrencyData");
-            GameDataResource = Resources.Load<GameData>("Data/GameData");
+            print(Application.persistentDataPath + '/' + "fileName" + ".save");
+            RefreshLocalData();
         }
 
-        public void UpdateLocalGameData(GameDataMiddleman newData)
+        public void RefreshLocalData()
         {
-            GameDataResource.DailyScore = newData.DailyScore;
-            GameDataResource.WeeklyScore = newData.WeeklyScore;
-            GameDataResource.MonthlyScore = newData.MonthlyScore;
-            GameDataResource.AllTimeScore = newData.AllTimeScore;
+            Currency = SaveSystem.Load<CurrencyData>();
+            Game = SaveSystem.Load<GameData>();
+        }
+
+        public void UpdateLocalGameData(GameData newData)
+        {
+            SaveSystem.Save<GameData>(newData);
+            Game = newData;
             OnGameDataChange?.Invoke();
         }
 
-        public void UpdateLocalCurrencyData(CurrencyMiddleman newData)
+        public void UpdateLocalCoins(int newValue)
         {
-            CurrencyDataResource.Coins = newData.Coins;
-            CurrencyDataResource.Cash = newData.Cash;
+            Currency.Coins = newValue;
+            SaveSystem.Save<CurrencyData>(Currency);
             OnCurrencyChange?.Invoke();
+        }
+
+        public void UpdateLocalCurrencyData(CurrencyData newData)
+        {
+            Currency = newData;
+            SaveSystem.Save<CurrencyData>(Currency);
+            OnGameDataChange?.Invoke();
         }
 
     }

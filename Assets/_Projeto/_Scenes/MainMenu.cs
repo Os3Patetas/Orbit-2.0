@@ -3,7 +3,7 @@ using UnityEngine.SceneManagement;
 using TMPro;
 
 using com.Icypeak.Orbit.Manager;
-using com.icypeak.data;
+using com.Icypeak.Data;
 
 namespace com.Icypeak.Orbit.Scene
 {
@@ -19,8 +19,8 @@ namespace com.Icypeak.Orbit.Scene
 
         void RefreshCurrencyUI()
         {
-            CoinsTextEl.text = LocalDataManager.Instance.CurrencyDataResource.Coins.ToString();
-            CashTextEl.text = LocalDataManager.Instance.CurrencyDataResource.Cash.ToString();
+            CoinsTextEl.text = LocalDataManager.Instance.Currency.Coins.ToString();
+            CashTextEl.text = LocalDataManager.Instance.Currency.Cash.ToString();
         }
 
         void OnEnable()

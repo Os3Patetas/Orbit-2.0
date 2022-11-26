@@ -11,7 +11,7 @@ namespace com.Icypeak.Orbit.Manager
 
         void Awake()
         {
-            if (string.Compare(SceneManager.GetActiveScene().name, "DestroyMode") == 0)
+            if (string.Compare(SceneManager.GetActiveScene().name, "CatchMode") == 0)
             {
                 GameMode = 1;
             }

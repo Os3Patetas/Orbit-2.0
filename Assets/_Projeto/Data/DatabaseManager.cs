@@ -1,9 +1,9 @@
+using System;
 using Firebase.Database;
 using UnityEngine;
 using System.Collections;
-using com.icypeak.data.middlemen;
 
-namespace com.icypeak.data
+namespace com.Icypeak.Data
 {
     public class DatabaseManager : MonoBehaviour
     {
@@ -26,7 +26,7 @@ namespace com.icypeak.data
 
         void Start()
         {
-            userId = "caioPTLULA";
+            userId = "xabliro";
             dbRef = FirebaseDatabase.DefaultInstance.RootReference;
 
             StartCoroutine(StartDB());
@@ -35,7 +35,7 @@ namespace com.icypeak.data
         IEnumerator StartDB()
         {
             var currency = dbRef.Child("currency").Child(userId).GetValueAsync();
-            var gameData = dbRef.Child(LocalDataManager.Instance.GameDataResource.GameName).Child(userId).GetValueAsync();
+            var gameData = dbRef.Child(GameInfo.GameName).Child(userId).GetValueAsync();
             yield return new WaitUntil(predicate: () => currency.IsCompleted && gameData.IsCompleted);
             if (currency != null && gameData != null)
             {
@@ -46,49 +46,45 @@ namespace com.icypeak.data
 
                 if (snapshotCurrency.Exists)
                 {
-                    LocalDataManager.Instance.UpdateLocalCurrencyData(new CurrencyMiddleman(
-                        int.Parse(snapshotCurrency.Child("coins").Value.ToString()),
-                        int.Parse(snapshotCurrency.Child("cash").Value.ToString())
-                    ));
+                    var dbData = new CurrencyData();
+                    dbData.Coins = int.Parse(snapshotCurrency.Child("Coins").Value.ToString());
+                    dbData.Cash = int.Parse(snapshotCurrency.Child("Cash").Value.ToString());
+                    LocalDataManager.Instance.UpdateLocalCurrencyData(dbData);
                 }
                 else
                 {
-                    var info = new CurrencyJSONFY(LocalDataManager.Instance.CurrencyDataResource);
-                    var infoToJson = JsonUtility.ToJson(info);
+                    var infoToJson = JsonUtility.ToJson(LocalDataManager.Instance.Currency);
                     dbRef.Child("currency").Child(userId).SetRawJsonValueAsync(infoToJson);
                 }
 
                 if (snapshotGameData.Exists)
                 {
-                    LocalDataManager.Instance.UpdateLocalGameData(new GameDataMiddleman(
-                        int.Parse(snapshotGameData.Child("daily_score").Value.ToString()),
-                        int.Parse(snapshotGameData.Child("weekly_score").Value.ToString()),
-                        int.Parse(snapshotGameData.Child("monthly_score").Value.ToString()),
-                        int.Parse(snapshotGameData.Child("alltime_score").Value.ToString())
-                    ));
+                    var dbData = new GameData();
+                    dbData.AlltimeScore = int.Parse(snapshotGameData.Child("AlltimeScore").Value.ToString());
+                    dbData.DailyScore = int.Parse(snapshotGameData.Child("DailyScore").Value.ToString());
+                    dbData.MonthlyScore = int.Parse(snapshotGameData.Child("MonthlyScore").Value.ToString());
+                    dbData.WeeklyScore = int.Parse(snapshotGameData.Child("WeeklyScore").Value.ToString());
+
+                    LocalDataManager.Instance.UpdateLocalGameData(dbData);
                 }
                 else
                 {
-                    var info = new GameDataJSONFY(LocalDataManager.Instance.GameDataResource);
-                    var infoToJson = JsonUtility.ToJson(info);
-                    dbRef.Child(LocalDataManager.Instance.GameDataResource.GameName).Child(userId).SetRawJsonValueAsync(infoToJson);
+                    var infoToJson = JsonUtility.ToJson(LocalDataManager.Instance.Game);
+                    dbRef.Child(GameInfo.GameName).Child(userId).SetRawJsonValueAsync(infoToJson);
                 }
             }
         }
 
         public void UpdateCurrencyDB()
         {
-            var infoCurrency = new CurrencyJSONFY(LocalDataManager.Instance.CurrencyDataResource);
-            var infoCurrencyToJson = JsonUtility.ToJson(infoCurrency);
+            var infoCurrencyToJson = JsonUtility.ToJson(LocalDataManager.Instance.Currency);
             dbRef.Child("currency").Child(userId).SetRawJsonValueAsync(infoCurrencyToJson);
         }
 
         public void UpdateGameDataDB()
         {
-            var infoGame = new GameDataJSONFY(LocalDataManager.Instance.GameDataResource);
-            var infoGameToJson = JsonUtility.ToJson(infoGame);
-            dbRef.Child(LocalDataManager.Instance.GameDataResource.GameName).Child(userId).SetRawJsonValueAsync(infoGameToJson);
-
+            var infoGameToJson = JsonUtility.ToJson(LocalDataManager.Instance.Game);
+            dbRef.Child(GameInfo.GameName).Child(userId).SetRawJsonValueAsync(infoGameToJson);
         }
 
         void OnEnable()
@@ -99,11 +95,10 @@ namespace com.icypeak.data
 
         void OnDisable()
         {
-            if (LocalDataManager.Instance != null)
-            {
-                LocalDataManager.Instance.OnCurrencyChange -= UpdateCurrencyDB;
-                LocalDataManager.Instance.OnGameDataChange -= UpdateGameDataDB;
-            }
+            if (LocalDataManager.Instance is null) return;
+
+            LocalDataManager.Instance.OnCurrencyChange -= UpdateCurrencyDB;
+            LocalDataManager.Instance.OnGameDataChange -= UpdateGameDataDB;
         }
 
     }

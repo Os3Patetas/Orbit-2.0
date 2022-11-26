@@ -20,7 +20,7 @@ namespace com.Icypeak.Orbit.Manager
 
         private void Awake()
         {
-            if(Instance != this && Instance != null)
+            if (Instance != this && Instance != null)
             {
                 Destroy(this.gameObject);
             }
@@ -43,9 +43,28 @@ namespace com.Icypeak.Orbit.Manager
             OnDifficultyChange?.Invoke();
         }
 
-        private void OnEnable() =>
-            ObstacleBehaviour.OnDeath += IncrementDifficulty;
-        private void OnDisable() =>
-            ObstacleBehaviour.OnDeath -= IncrementDifficulty;
+        private void OnEnable()
+        {
+            if (Director.GameMode == 1)
+            {
+                ObstacleBehaviour.OnDeath += IncrementDifficulty;
+            }
+            else
+            {
+                ObstacleBehaviour.OnEscape += IncrementDifficulty;
+            }
+
+        }
+        private void OnDisable()
+        {
+            if (Director.GameMode == 1)
+            {
+                ObstacleBehaviour.OnDeath -= IncrementDifficulty;
+            }
+            else
+            {
+                ObstacleBehaviour.OnEscape -= IncrementDifficulty;
+            }
+        }
     }
 }

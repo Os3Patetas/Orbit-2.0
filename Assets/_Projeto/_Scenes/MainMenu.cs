@@ -12,10 +12,21 @@ namespace com.Icypeak.Orbit.Scene
         [SerializeField] TextMeshProUGUI CoinsTextEl;
         [SerializeField] TextMeshProUGUI CashTextEl;
 
-        void Start()
+        void RefreshCurrencyUI()
         {
             CoinsTextEl.text = LocalDataManager.Instance.CurrencyDataResource.Coins.ToString();
             CashTextEl.text = LocalDataManager.Instance.CurrencyDataResource.Cash.ToString();
+        }
+
+        void OnEnable()
+        {
+            LocalDataManager.Instance.OnCurrencyChange += RefreshCurrencyUI;
+        }
+        void OnDisable()
+        {
+            if (LocalDataManager.Instance is null) return;
+
+            LocalDataManager.Instance.OnCurrencyChange -= RefreshCurrencyUI;
         }
 
         public void GoToChooseGameMode()

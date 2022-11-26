@@ -24,7 +24,10 @@ namespace com.icypeak.data
                 Instance = this;
             }
             DontDestroyOnLoad(this.gameObject);
+        }
 
+        void Start()
+        {
             CurrencyDataResource = Resources.Load<CurrencyData>("Data/CurrencyData");
             GameDataResource = Resources.Load<GameData>("Data/GameData");
         }

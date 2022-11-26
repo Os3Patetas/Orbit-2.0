@@ -45,8 +45,10 @@ namespace com.icypeak.data
 
                 if (snapshotCurrency.Exists)
                 {
-                    LocalDataManager.Instance.CurrencyDataResource.Coins = int.Parse(snapshotCurrency.Child("coins").Value.ToString());
-                    LocalDataManager.Instance.CurrencyDataResource.Cash = int.Parse(snapshotCurrency.Child("cash").Value.ToString());
+                    LocalDataManager.Instance.UpdateLocalCurrencyData(new CurrencyData(
+                        int.Parse(snapshotCurrency.Child("coins").Value.ToString()),
+                        int.Parse(snapshotCurrency.Child("cash").Value.ToString())
+                    ));
                 }
                 else
                 {
@@ -57,10 +59,12 @@ namespace com.icypeak.data
 
                 if (snapshotGameData.Exists)
                 {
-                    LocalDataManager.Instance.GameDataResource.DailyScore = int.Parse(snapshotGameData.Child("daily_score").Value.ToString());
-                    LocalDataManager.Instance.GameDataResource.WeeklyScore = int.Parse(snapshotGameData.Child("weekly_score").Value.ToString());
-                    LocalDataManager.Instance.GameDataResource.MonthlyScore = int.Parse(snapshotGameData.Child("monthly_score").Value.ToString());
-                    LocalDataManager.Instance.GameDataResource.AllTimeScore = int.Parse(snapshotGameData.Child("alltime_score").Value.ToString());
+                    LocalDataManager.Instance.UpdateLocalGameData(new GameData(
+                        int.Parse(snapshotGameData.Child("daily_score").Value.ToString()),
+                        int.Parse(snapshotGameData.Child("weekly_score").Value.ToString()),
+                        int.Parse(snapshotGameData.Child("monthly_score").Value.ToString()),
+                        int.Parse(snapshotGameData.Child("alltime_score").Value.ToString())
+                    ));
                 }
                 else
                 {

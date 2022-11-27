@@ -56,7 +56,7 @@ namespace com.Icypeak.Data
         {
             Currency = newData;
             SaveSystem.Save<CurrencyData>(Currency);
-            OnGameDataChange?.Invoke();
+            OnCurrencyChange?.Invoke();
         }
 
     }

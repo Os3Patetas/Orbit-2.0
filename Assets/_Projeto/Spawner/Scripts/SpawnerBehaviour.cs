@@ -23,8 +23,8 @@ namespace com.Icypeak.Orbit.Spawner
             {
                 var bonusOdd = Random.Range(1, 100) * bonusSpawnChanceMult;
                 var obstacleOdd = Random.Range(1, 100) * obstacleSpawnChanceMult;
-                var randomSpawnPos = this.transform.position + new Vector3(Random.Range(-2.1f,2.1f),0,0);
-                if(obstacleOdd > bonusOdd)
+                var randomSpawnPos = this.transform.position + new Vector3(Random.Range(-2.1f, 2.1f), 0, 0);
+                if (obstacleOdd > bonusOdd)
                 {
                     int randomEl = Random.Range(0, Obstacles.Length);
                     Instantiate(Obstacles[randomEl], randomSpawnPos, Quaternion.identity);
@@ -33,6 +33,10 @@ namespace com.Icypeak.Orbit.Spawner
                 {
                     int randomEl = Random.Range(0, Bonuses.Length);
                     Instantiate(Bonuses[randomEl], randomSpawnPos, Quaternion.identity);
+
+                    randomSpawnPos = this.transform.position + new Vector3(Random.Range(-2.1f, 2.1f), 0, 0);
+                    randomEl = Random.Range(0, Obstacles.Length);
+                    Instantiate(Obstacles[randomEl], randomSpawnPos, Quaternion.identity);
                 }
 
                 _spawnTimer = spawnCooldown;

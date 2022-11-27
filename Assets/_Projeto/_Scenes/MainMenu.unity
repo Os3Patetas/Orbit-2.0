@@ -911,19 +911,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 819669309}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 1348242491}
-        m_TargetAssemblyTypeName: com.Icypeak.Orbit.Scene.MainMenu, Assembly-CSharp
-        m_MethodName: GoToOptionsScene
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
 --- !u!114 &819669309
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2143,6 +2131,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7b73cbc2195728d00b175b802df1fa3f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  userId: 
 --- !u!4 &1848219026
 Transform:
   m_ObjectHideFlags: 0
@@ -2391,6 +2380,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 98adbca09d82f290892b32cc3f7a96d4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  Game:
+    DailyScore: 0
+    WeeklyScore: 0
+    MonthlyScore: 0
+    AlltimeScore: 0
+  Currency:
+    Coins: 0
+    Cash: 0
+  Info:
+    GameName: Orbit
+    LastUserID: anonymous
 --- !u!4 &2076381334
 Transform:
   m_ObjectHideFlags: 0
